@@ -41,8 +41,6 @@ let packetCount = 0;
 database.ref('/latest').on('value', (snapshot) => {
     const data = snapshot.val();
     
-    console.log('Latest data:', data);  // Debug
-    
     if (data) {
         if (data.temperature !== undefined && data.temperature !== null) {
             tempEl.textContent = data.temperature.toFixed(1);
@@ -76,33 +74,51 @@ database.ref('/latest').on('value', (snapshot) => {
 });
 
 // ============================================================
-// READ HISTORY DATA
+// READ HISTORY DATA - FILTERED FOR VALID TIMESTAMPS
 // ============================================================
 
 database.ref('/history').on('value', (snapshot) => {
     const data = snapshot.val();
     
-    console.log('📜 History data received:', data);  // Debug
+    console.log('📜 All History Data:', data);
     
     if (data) {
         // Convert object to array
-        const entries = Object.keys(data).map(key => ({
+        const allEntries = Object.keys(data).map(key => ({
             key: key,
             ...data[key]
         }));
         
-        console.log('📜 Entries found:', entries.length);  // Debug
+        console.log('📜 Total entries:', allEntries.length);
+        
+        // FILTER: Only keep entries with valid timestamps (contain "-" or ":" )
+        const validEntries = allEntries.filter(entry => {
+            const ts = entry.timestamp;
+            // Keep entries where timestamp is a string and contains "-" or ":"
+            if (typeof ts === 'string') {
+                return ts.includes('-') || ts.includes(':');
+            }
+            // Also keep entries with numeric timestamps if they look like real time
+            if (typeof ts === 'number' && ts > 1000000000) {
+                return true;
+            }
+            return false;
+        });
+        
+        console.log('📜 Valid entries (with proper time):', validEntries.length);
         
         // Sort by timestamp (newest first)
-        entries.sort((a, b) => {
-            if (a.timestamp && b.timestamp) {
-                return b.timestamp.localeCompare(a.timestamp);
-            }
-            return b.key.localeCompare(a.key);
+        validEntries.sort((a, b) => {
+            // Try to parse timestamps
+            const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+            const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+            return timeB - timeA;
         });
         
         // Get last 10
-        const last10 = entries.slice(0, 10);
+        const last10 = validEntries.slice(0, 10);
+        
+        console.log('📜 Last 10 valid entries:', last10);
         
         historyCount.textContent = last10.length;
         historyBody.innerHTML = '';
@@ -140,11 +156,16 @@ database.ref('/history').on('value', (snapshot) => {
             const timeCell = document.createElement('td');
             if (entry.timestamp) {
                 const full = entry.timestamp;
-                if (full.includes(' ')) {
-                    const parts = full.split(' ');
-                    timeCell.textContent = parts[parts.length - 1];
+                if (typeof full === 'string') {
+                    // If it contains a date, extract just the time
+                    if (full.includes(' ')) {
+                        const parts = full.split(' ');
+                        timeCell.textContent = parts[parts.length - 1];
+                    } else {
+                        timeCell.textContent = full;
+                    }
                 } else {
-                    timeCell.textContent = full;
+                    timeCell.textContent = String(full);
                 }
             } else {
                 timeCell.textContent = '--';
@@ -154,7 +175,7 @@ database.ref('/history').on('value', (snapshot) => {
             historyBody.appendChild(row);
         });
     } else {
-        console.log('📜 No history data found');  // Debug
+        console.log('📜 No history data found');
         historyBody.innerHTML = `
             <tr>
                 <td colspan="5" style="text-align:center; padding: 20px; color: #8a9aa8;">
@@ -226,3 +247,4 @@ function updateSignalStatus(signal) {
 }
 
 console.log('📡 SMART FARM Dashboard Ready');
+console.log('📍 Firebase URL:', firebaseConfig.databaseURL);
