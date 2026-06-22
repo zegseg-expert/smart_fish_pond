@@ -32,12 +32,16 @@ const phStatus = document.getElementById('phStatus');
 const tdsStatus = document.getElementById('tdsStatus');
 const signalStatus = document.getElementById('signalStatus');
 
+let packetCount = 0;
+
 // ============================================================
 // READ LATEST DATA
 // ============================================================
 
 database.ref('/latest').on('value', (snapshot) => {
     const data = snapshot.val();
+    
+    console.log('Latest data:', data);  // Debug
     
     if (data) {
         if (data.temperature !== undefined && data.temperature !== null) {
@@ -62,14 +66,11 @@ database.ref('/latest').on('value', (snapshot) => {
         
         if (data.timestamp !== undefined && data.timestamp !== null) {
             timestampEl.textContent = data.timestamp;
-        } else {
-            timestampEl.textContent = 'No timestamp';
         }
         
-        // Update packet count
         if (data.timestamp) {
-            const count = parseInt(packetsEl.textContent) || 0;
-            packetsEl.textContent = count + 1;
+            packetCount++;
+            packetsEl.textContent = packetCount;
         }
     }
 });
@@ -81,23 +82,29 @@ database.ref('/latest').on('value', (snapshot) => {
 database.ref('/history').on('value', (snapshot) => {
     const data = snapshot.val();
     
+    console.log('📜 History data received:', data);  // Debug
+    
     if (data) {
-        // Convert to array
+        // Convert object to array
         const entries = Object.keys(data).map(key => ({
             key: key,
             ...data[key]
         }));
         
-        // Sort by key (newest first)
-        entries.sort((a, b) => b.key.localeCompare(a.key));
+        console.log('📜 Entries found:', entries.length);  // Debug
+        
+        // Sort by timestamp (newest first)
+        entries.sort((a, b) => {
+            if (a.timestamp && b.timestamp) {
+                return b.timestamp.localeCompare(a.timestamp);
+            }
+            return b.key.localeCompare(a.key);
+        });
         
         // Get last 10
         const last10 = entries.slice(0, 10);
         
-        // Update count
         historyCount.textContent = last10.length;
-        
-        // Clear table
         historyBody.innerHTML = '';
         
         if (last10.length === 0) {
@@ -111,34 +118,27 @@ database.ref('/history').on('value', (snapshot) => {
             return;
         }
         
-        // Add rows
         last10.forEach((entry, index) => {
             const row = document.createElement('tr');
             
-            // Number
             const numCell = document.createElement('td');
             numCell.textContent = index + 1;
             row.appendChild(numCell);
             
-            // Temperature
             const tempCell = document.createElement('td');
             tempCell.textContent = entry.temperature !== undefined ? entry.temperature.toFixed(1) + '°C' : '--';
             row.appendChild(tempCell);
             
-            // pH
             const phCell = document.createElement('td');
             phCell.textContent = entry.ph !== undefined ? entry.ph.toFixed(2) : '--';
             row.appendChild(phCell);
             
-            // TDS
             const tdsCell = document.createElement('td');
             tdsCell.textContent = entry.tds !== undefined ? entry.tds.toFixed(0) + ' ppm' : '--';
             row.appendChild(tdsCell);
             
-            // Time
             const timeCell = document.createElement('td');
             if (entry.timestamp) {
-                // Extract time part (HH:MM:SS)
                 const full = entry.timestamp;
                 if (full.includes(' ')) {
                     const parts = full.split(' ');
@@ -154,6 +154,7 @@ database.ref('/history').on('value', (snapshot) => {
             historyBody.appendChild(row);
         });
     } else {
+        console.log('📜 No history data found');  // Debug
         historyBody.innerHTML = `
             <tr>
                 <td colspan="5" style="text-align:center; padding: 20px; color: #8a9aa8;">
