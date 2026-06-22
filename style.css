@@ -1,49 +1,46 @@
 /* ============================================================
-   FISH POND MONITOR - PINK THEME (APP FIXED)
+   FISH POND MONITOR - PINK THEME (FORCED)
    SMART FARM | 2021/1/81764CM
    ============================================================ */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* FORCE PINK BACKGROUND - This overrides everything! */
 html, body {
-    height: 100%;
     margin: 0;
     padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #fce4ec !important;
+    background: #fce4ec !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #4a1a2a;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #fce4ec; /* Light pink */
-    color: #4a1a2a;
-    min-height: 100vh;
-    padding: 15px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    min-height: 100vh;
+    padding: 15px;
+    background-color: #fce4ec !important;
+    background: #fce4ec !important;
 }
 
-/* ============================================================
-   MAIN CONTAINER - PINK BACKGROUND
-   ============================================================ */
-
+/* MAIN CONTAINER - Also pink */
 .container {
     max-width: 480px;
     width: 100%;
     margin: 0 auto;
-    background: #fce4ec; /* Light pink background for app */
+    background-color: #fce4ec !important;
+    background: #fce4ec !important;
     border-radius: 20px;
     padding: 20px 15px;
     box-shadow: 0 4px 20px rgba(200, 50, 100, 0.15);
     border: 1px solid #f8bbd0;
 }
 
-/* Ensure cards stand out against pink background */
+/* Make cards white so they stand out */
 .card {
-    background: #ffffff;
+    background: #ffffff !important;
     border-radius: 14px;
     padding: 15px 10px;
     text-align: center;
@@ -63,7 +60,7 @@ header {
     text-align: center;
     padding-bottom: 15px;
     border-bottom: 2px solid #f8bbd0;
-    background: #fce4ec;
+    background: #fce4ec !important;
 }
 
 header h1 {
@@ -147,7 +144,7 @@ header .matric {
 .info {
     text-align: center;
     padding: 12px;
-    background: #ffffff;
+    background: #ffffff !important;
     border-radius: 12px;
     margin: 12px 0;
     border: 1px solid #f8bbd0;
@@ -170,7 +167,7 @@ header .matric {
 
 .history-section {
     margin-top: 15px;
-    background: #ffffff;
+    background: #ffffff !important;
     border-radius: 14px;
     padding: 14px;
     border: 1px solid #f8bbd0;
@@ -291,7 +288,7 @@ footer {
     border-top: 1px solid #f8bbd0;
     font-size: 10px;
     color: #ad1457;
-    background: #fce4ec;
+    background: #fce4ec !important;
 }
 
 /* ============================================================
@@ -314,4 +311,20 @@ footer {
     .container {
         padding: 15px 10px;
     }
+}
+
+/* ============================================================
+   EXTRA FORCE - In case nothing else works
+   ============================================================ */
+
+/* This ensures even the space outside container is pink */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fce4ec !important;
+    z-index: -1;
 }
