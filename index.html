@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fish Pond Monitor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐟 SMART FARM</h1>
+            <h2>Fish Pond Monitoring System</h2>
+            <p class="matric">2021/1/81764CM</p>
+        </header>
+
+        <div class="dashboard">
+            <div class="card temperature">
+                <div class="icon">🌡️</div>
+                <div class="label">Temperature</div>
+                <div class="value" id="temperature">--</div>
+                <div class="unit">°C</div>
+                <div class="status" id="tempStatus">--</div>
+            </div>
+
+            <div class="card ph">
+                <div class="icon">🧪</div>
+                <div class="label">pH Level</div>
+                <div class="value" id="ph">--</div>
+                <div class="unit">pH</div>
+                <div class="status" id="phStatus">--</div>
+            </div>
+
+            <div class="card tds">
+                <div class="icon">💧</div>
+                <div class="label">TDS</div>
+                <div class="value" id="tds">--</div>
+                <div class="unit">ppm</div>
+                <div class="status" id="tdsStatus">--</div>
+            </div>
+
+            <div class="card signal">
+                <div class="icon">📶</div>
+                <div class="label">Signal</div>
+                <div class="value" id="signal">--</div>
+                <div class="unit">dBm</div>
+                <div class="status" id="signalStatus">--</div>
+            </div>
+        </div>
+
+        <div class="info">
+            <p>Last Updated: <span id="timestamp">--</span></p>
+            <p>Packets Received: <span id="packets">0</span></p>
+        </div>
+
+        <footer>
+            <p>SMART FARM © 2026 | 2021/1/81764CM</p>
+        </footer>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
