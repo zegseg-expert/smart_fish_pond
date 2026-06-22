@@ -1,9 +1,8 @@
 // ============================================================
-// FISH POND MONITOR - Firebase Integration with HISTORY
+// FISH POND MONITOR - Firebase Integration
 // SMART FARM | 2021/1/81764CM
 // ============================================================
 
-// Your Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyCNYoTESy39Gwh4hM4CznmMEA-pJLV-zVQ",
     authDomain: "fishpondmonitor-46e83.firebaseapp.com",
@@ -15,14 +14,10 @@ const firebaseConfig = {
     measurementId: "G-0WSP3JFWF2"
 };
 
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// ============================================================
-// DOM ELEMENTS
-// ============================================================
-
+// DOM Elements
 const tempEl = document.getElementById('temperature');
 const phEl = document.getElementById('ph');
 const tdsEl = document.getElementById('tds');
@@ -37,87 +32,69 @@ const phStatus = document.getElementById('phStatus');
 const tdsStatus = document.getElementById('tdsStatus');
 const signalStatus = document.getElementById('signalStatus');
 
-let packetCount = 0;
-
 // ============================================================
-// READ LATEST DATA FROM FIREBASE
+// READ LATEST DATA
 // ============================================================
 
-const latestRef = database.ref('/latest');
-
-latestRef.on('value', (snapshot) => {
+database.ref('/latest').on('value', (snapshot) => {
     const data = snapshot.val();
     
     if (data) {
-        if (data.temperature !== undefined) {
+        if (data.temperature !== undefined && data.temperature !== null) {
             tempEl.textContent = data.temperature.toFixed(1);
-            packetCount++;
             updateTemperatureStatus(data.temperature);
         }
         
-        if (data.ph !== undefined) {
+        if (data.ph !== undefined && data.ph !== null) {
             phEl.textContent = data.ph.toFixed(2);
             updatePHStatus(data.ph);
         }
         
-        if (data.tds !== undefined) {
+        if (data.tds !== undefined && data.tds !== null) {
             tdsEl.textContent = data.tds.toFixed(0);
             updateTDSStatus(data.tds);
         }
         
-        if (data.signal !== undefined) {
+        if (data.signal !== undefined && data.signal !== null) {
             signalEl.textContent = data.signal;
             updateSignalStatus(data.signal);
         }
         
-        if (data.timestamp !== undefined) {
+        if (data.timestamp !== undefined && data.timestamp !== null) {
             timestampEl.textContent = data.timestamp;
+        } else {
+            timestampEl.textContent = 'No timestamp';
         }
         
-        packetsEl.textContent = packetCount;
+        // Update packet count
+        if (data.timestamp) {
+            const count = parseInt(packetsEl.textContent) || 0;
+            packetsEl.textContent = count + 1;
+        }
     }
-}, (error) => {
-    console.error('Firebase read error:', error);
 });
 
 // ============================================================
-// READ HISTORY DATA (LAST 10 ENTRIES)
+// READ HISTORY DATA
 // ============================================================
 
-const historyRef = database.ref('/history');
-
-historyRef.on('value', (snapshot) => {
+database.ref('/history').on('value', (snapshot) => {
     const data = snapshot.val();
     
-    console.log('History data received:', data);  // Debug log
-    
     if (data) {
-        // Convert object to array of entries
-        const entries = Object.keys(data).map(key => {
-            return {
-                key: key,
-                ...data[key]
-            };
-        });
+        // Convert to array
+        const entries = Object.keys(data).map(key => ({
+            key: key,
+            ...data[key]
+        }));
         
-        console.log('Entries:', entries);  // Debug log
+        // Sort by key (newest first)
+        entries.sort((a, b) => b.key.localeCompare(a.key));
         
-        // Sort by timestamp (newest first)
-        entries.sort((a, b) => {
-            // If timestamp exists, use it
-            if (a.timestamp && b.timestamp) {
-                return b.timestamp.localeCompare(a.timestamp);
-            }
-            // Fallback to key sort
-            return b.key.localeCompare(a.key);
-        });
-        
-        // Get last 10 entries
+        // Get last 10
         const last10 = entries.slice(0, 10);
         
-        console.log('Last 10:', last10);  // Debug log
-        
-        // Update history count
+        // Update count
         historyCount.textContent = last10.length;
         
         // Clear table
@@ -126,19 +103,19 @@ historyRef.on('value', (snapshot) => {
         if (last10.length === 0) {
             historyBody.innerHTML = `
                 <tr>
-                    <td colspan="5" style="text-align:center; color: #8a9aa8; padding: 20px;">
-                        📭 No history data yet. Waiting for first reading...
+                    <td colspan="5" style="text-align:center; padding: 20px; color: #8a9aa8;">
+                        📭 No history data yet
                     </td>
                 </tr>
             `;
             return;
         }
         
-        // Add each entry to table
+        // Add rows
         last10.forEach((entry, index) => {
             const row = document.createElement('tr');
             
-            // Entry number
+            // Number
             const numCell = document.createElement('td');
             numCell.textContent = index + 1;
             row.appendChild(numCell);
@@ -161,19 +138,13 @@ historyRef.on('value', (snapshot) => {
             // Time
             const timeCell = document.createElement('td');
             if (entry.timestamp) {
-                // Show only time part if date is today, otherwise show full
-                const fullTime = entry.timestamp;
-                // Check if it contains a date
-                if (fullTime.includes(' ')) {
-                    const parts = fullTime.split(' ');
-                    if (parts.length >= 2) {
-                        // Show only time (HH:MM:SS)
-                        timeCell.textContent = parts[1];
-                    } else {
-                        timeCell.textContent = fullTime;
-                    }
+                // Extract time part (HH:MM:SS)
+                const full = entry.timestamp;
+                if (full.includes(' ')) {
+                    const parts = full.split(' ');
+                    timeCell.textContent = parts[parts.length - 1];
                 } else {
-                    timeCell.textContent = fullTime;
+                    timeCell.textContent = full;
                 }
             } else {
                 timeCell.textContent = '--';
@@ -185,22 +156,13 @@ historyRef.on('value', (snapshot) => {
     } else {
         historyBody.innerHTML = `
             <tr>
-                <td colspan="5" style="text-align:center; color: #8a9aa8; padding: 20px;">
-                    📭 No history data yet. Waiting for first reading...
+                <td colspan="5" style="text-align:center; padding: 20px; color: #8a9aa8;">
+                    📭 No history data yet
                 </td>
             </tr>
         `;
         historyCount.textContent = '0';
     }
-}, (error) => {
-    console.error('History read error:', error);
-    historyBody.innerHTML = `
-        <tr>
-            <td colspan="5" style="text-align:center; color: #ff6b35; padding: 20px;">
-                ❌ Error loading history. Check Firebase.
-            </td>
-        </tr>
-    `;
 });
 
 // ============================================================
@@ -262,18 +224,4 @@ function updateSignalStatus(signal) {
     }
 }
 
-// ============================================================
-// CONNECTION STATUS
-// ============================================================
-
-database.ref('.info/connected').on('value', (snapshot) => {
-    const connected = snapshot.val();
-    if (connected) {
-        console.log('✅ Connected to Firebase');
-    } else {
-        console.log('❌ Disconnected from Firebase');
-    }
-});
-
-console.log('📡 Fish Pond Monitor Dashboard Ready');
-console.log('🏠 SMART FARM | 2021/1/81764CM');
+console.log('📡 SMART FARM Dashboard Ready');
