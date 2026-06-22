@@ -1,5 +1,5 @@
 // ============================================================
-// FISH POND MONITOR - Firebase Integration
+// FISH POND MONITOR - Firebase Integration with HISTORY
 // SMART FARM | 2021/1/81764CM
 // ============================================================
 
@@ -19,13 +19,19 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// DOM Elements
+// ============================================================
+// DOM ELEMENTS
+// ============================================================
+
 const tempEl = document.getElementById('temperature');
 const phEl = document.getElementById('ph');
 const tdsEl = document.getElementById('tds');
 const signalEl = document.getElementById('signal');
 const timestampEl = document.getElementById('timestamp');
 const packetsEl = document.getElementById('packets');
+const historyBody = document.getElementById('historyBody');
+const historyCount = document.getElementById('historyCount');
+
 const tempStatus = document.getElementById('tempStatus');
 const phStatus = document.getElementById('phStatus');
 const tdsStatus = document.getElementById('tdsStatus');
@@ -34,16 +40,15 @@ const signalStatus = document.getElementById('signalStatus');
 let packetCount = 0;
 
 // ============================================================
-// READ DATA FROM FIREBASE
+// READ LATEST DATA FROM FIREBASE
 // ============================================================
 
-const sensorsRef = database.ref('/sensors');
+const latestRef = database.ref('/latest');
 
-sensorsRef.on('value', (snapshot) => {
+latestRef.on('value', (snapshot) => {
     const data = snapshot.val();
     
     if (data) {
-        // Update values
         if (data.temperature !== undefined) {
             tempEl.textContent = data.temperature.toFixed(1);
             packetCount++;
@@ -66,15 +71,85 @@ sensorsRef.on('value', (snapshot) => {
         }
         
         if (data.timestamp !== undefined) {
-            // Convert timestamp to readable time
             const date = new Date(data.timestamp * 1000);
-            timestampEl.textContent = date.toLocaleTimeString();
+            timestampEl.textContent = date.toLocaleString();
         }
         
         packetsEl.textContent = packetCount;
     }
 }, (error) => {
     console.error('Firebase read error:', error);
+});
+
+// ============================================================
+// READ HISTORY DATA (LAST 10 ENTRIES)
+// ============================================================
+
+const historyRef = database.ref('/history');
+
+historyRef.on('value', (snapshot) => {
+    const data = snapshot.val();
+    
+    if (data) {
+        // Convert object to array of entries
+        const entries = Object.keys(data).map(key => {
+            return {
+                key: key,
+                ...data[key]
+            };
+        });
+        
+        // Sort by timestamp (newest first)
+        entries.sort((a, b) => b.timestamp - a.timestamp);
+        
+        // Get last 10 entries
+        const last10 = entries.slice(0, 10);
+        
+        // Update history count
+        historyCount.textContent = last10.length;
+        
+        // Clear table
+        historyBody.innerHTML = '';
+        
+        // Add each entry to table
+        last10.forEach((entry, index) => {
+            const row = document.createElement('tr');
+            
+            // Entry number
+            const numCell = document.createElement('td');
+            numCell.textContent = index + 1;
+            row.appendChild(numCell);
+            
+            // Temperature
+            const tempCell = document.createElement('td');
+            tempCell.textContent = entry.temperature ? entry.temperature.toFixed(1) + '°C' : '--';
+            row.appendChild(tempCell);
+            
+            // pH
+            const phCell = document.createElement('td');
+            phCell.textContent = entry.ph ? entry.ph.toFixed(2) : '--';
+            row.appendChild(phCell);
+            
+            // TDS
+            const tdsCell = document.createElement('td');
+            tdsCell.textContent = entry.tds ? entry.tds.toFixed(0) + ' ppm' : '--';
+            row.appendChild(tdsCell);
+            
+            // Time
+            const timeCell = document.createElement('td');
+            if (entry.timestamp) {
+                const date = new Date(entry.timestamp * 1000);
+                timeCell.textContent = date.toLocaleTimeString();
+            } else {
+                timeCell.textContent = '--';
+            }
+            row.appendChild(timeCell);
+            
+            historyBody.appendChild(row);
+        });
+    }
+}, (error) => {
+    console.error('History read error:', error);
 });
 
 // ============================================================
@@ -144,10 +219,8 @@ database.ref('.info/connected').on('value', (snapshot) => {
     const connected = snapshot.val();
     if (connected) {
         console.log('✅ Connected to Firebase');
-        document.querySelector('.info p:first-child').style.color = '#4ade80';
     } else {
         console.log('❌ Disconnected from Firebase');
-        document.querySelector('.info p:first-child').style.color = '#ff6b35';
     }
 });
 
