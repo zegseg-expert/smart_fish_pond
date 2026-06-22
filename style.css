@@ -1,5 +1,5 @@
 /* ============================================================
-   FISH POND MONITOR - CLEAN DESIGN FOR APP & WEB
+   FISH POND MONITOR - PINK THEME
    SMART FARM | 2021/1/81764CM
    ============================================================ */
 
@@ -11,8 +11,8 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f0f4f8;
-    color: #1a2a3a;
+    background: #fce4ec;
+    color: #4a1a2a;
     min-height: 100vh;
     padding: 15px;
 }
@@ -24,7 +24,8 @@ body {
     background: #ffffff;
     border-radius: 20px;
     padding: 20px 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(200, 50, 100, 0.15);
+    border: 1px solid #f8bbd0;
 }
 
 /* ============================================================
@@ -34,25 +35,25 @@ body {
 header {
     text-align: center;
     padding-bottom: 15px;
-    border-bottom: 2px solid #e8edf2;
+    border-bottom: 2px solid #f8bbd0;
 }
 
 header h1 {
     font-size: 24px;
-    color: #0a7e8c;
+    color: #d81b60;
     font-weight: 700;
 }
 
 header h2 {
     font-size: 14px;
-    color: #6a8a9a;
+    color: #ad1457;
     font-weight: 400;
     margin-top: 2px;
 }
 
 header .matric {
     font-size: 11px;
-    color: #9aacb8;
+    color: #e91e63;
     margin-top: 2px;
 }
 
@@ -68,11 +69,11 @@ header .matric {
 }
 
 .card {
-    background: #f7f9fb;
+    background: #fce4ec;
     border-radius: 14px;
     padding: 15px 10px;
     text-align: center;
-    border: 1px solid #e8edf2;
+    border: 1px solid #f8bbd0;
     transition: transform 0.2s;
 }
 
@@ -87,9 +88,10 @@ header .matric {
 
 .card .label {
     font-size: 10px;
-    color: #8a9aa8;
+    color: #ad1457;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    font-weight: 600;
 }
 
 .card .value {
@@ -100,7 +102,7 @@ header .matric {
 
 .card .unit {
     font-size: 12px;
-    color: #8a9aa8;
+    color: #880e4f;
 }
 
 .card .status {
@@ -112,16 +114,16 @@ header .matric {
 }
 
 /* Card Colors */
-.temperature .value { color: #e67e22; }
-.ph .value { color: #2980b9; }
-.tds .value { color: #27ae60; }
-.signal .value { color: #f39c12; }
+.temperature .value { color: #e65100; }
+.ph .value { color: #6a1b9a; }
+.tds .value { color: #1b5e20; }
+.signal .value { color: #e65100; }
 
 /* Status Colors */
-.status.good { background: #d5f5e3; color: #1a7a3a; }
-.status.warning { background: #fdebd0; color: #a04000; }
-.status.danger { background: #fadbd8; color: #922b21; }
-.status.unknown { background: #ebedef; color: #6a7a8a; }
+.status.good { background: #c8e6c9; color: #1b5e20; }
+.status.warning { background: #fff3e0; color: #e65100; }
+.status.danger { background: #ffcdd2; color: #c62828; }
+.status.unknown { background: #f8bbd0; color: #880e4f; }
 
 /* ============================================================
    INFO SECTION
@@ -130,20 +132,20 @@ header .matric {
 .info {
     text-align: center;
     padding: 12px;
-    background: #f7f9fb;
+    background: #fce4ec;
     border-radius: 12px;
     margin: 12px 0;
-    border: 1px solid #e8edf2;
+    border: 1px solid #f8bbd0;
 }
 
 .info p {
     font-size: 12px;
-    color: #6a7a8a;
+    color: #ad1457;
     margin: 2px 0;
 }
 
 .info span {
-    color: #0a7e8c;
+    color: #d81b60;
     font-weight: 600;
 }
 
@@ -153,23 +155,23 @@ header .matric {
 
 .history-section {
     margin-top: 15px;
-    background: #f7f9fb;
+    background: #fce4ec;
     border-radius: 14px;
     padding: 14px;
-    border: 1px solid #e8edf2;
+    border: 1px solid #f8bbd0;
 }
 
 .history-section h3 {
     font-size: 14px;
-    color: #0a7e8c;
+    color: #d81b60;
     margin-bottom: 10px;
     text-align: center;
     font-weight: 600;
 }
 
 .history-section h3 span {
-    color: #27ae60;
-    background: #d5f5e3;
+    color: #1b5e20;
+    background: #c8e6c9;
     padding: 1px 10px;
     border-radius: 12px;
     font-size: 12px;
@@ -197,7 +199,7 @@ header .matric {
 }
 
 #historyTable th {
-    background: #0a7e8c;
+    background: #d81b60;
     color: #ffffff;
     padding: 8px 6px;
     text-align: center;
@@ -218,13 +220,13 @@ header .matric {
 #historyTable td {
     padding: 7px 4px;
     text-align: center;
-    border-bottom: 1px solid #e8edf2;
-    color: #2a3a4a;
+    border-bottom: 1px solid #f8bbd0;
+    color: #4a1a2a;
     font-size: 12px;
 }
 
 #historyTable tr:nth-child(even) td {
-    background: #fafcfd;
+    background: #fce4ec;
 }
 
 #historyTable tr:nth-child(odd) td {
@@ -232,11 +234,11 @@ header .matric {
 }
 
 #historyTable tr:hover td {
-    background: #e8f0fe;
+    background: #f8bbd0;
 }
 
 #historyTable td:first-child {
-    color: #8a9aa8;
+    color: #ad1457;
     font-weight: 600;
 }
 
@@ -250,17 +252,17 @@ header .matric {
 }
 
 .table-wrapper::-webkit-scrollbar-track {
-    background: #e8edf2;
+    background: #f8bbd0;
     border-radius: 4px;
 }
 
 .table-wrapper::-webkit-scrollbar-thumb {
-    background: #b0c0cc;
+    background: #d81b60;
     border-radius: 4px;
 }
 
 .table-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #8a9aa8;
+    background: #ad1457;
 }
 
 /* ============================================================
@@ -271,9 +273,9 @@ footer {
     text-align: center;
     padding-top: 12px;
     margin-top: 12px;
-    border-top: 1px solid #e8edf2;
+    border-top: 1px solid #f8bbd0;
     font-size: 10px;
-    color: #9aacb8;
+    color: #ad1457;
 }
 
 /* ============================================================
