@@ -14,6 +14,7 @@
             <p class="matric">2021/1/81764CM</p>
         </header>
 
+        <!-- Dashboard Cards -->
         <div class="dashboard">
             <div class="card temperature">
                 <div class="icon">🌡️</div>
@@ -48,9 +49,35 @@
             </div>
         </div>
 
+        <!-- Info -->
         <div class="info">
             <p>Last Updated: <span id="timestamp">--</span></p>
             <p>Packets Received: <span id="packets">0</span></p>
+        </div>
+
+        <!-- History Section -->
+        <div class="history-section">
+            <h3>📜 Last 10 Readings (<span id="historyCount">0</span>)</h3>
+            <div class="table-wrapper">
+                <table id="historyTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>🌡️ Temp</th>
+                            <th>🧪 pH</th>
+                            <th>💧 TDS</th>
+                            <th>🕐 Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                        <tr>
+                            <td colspan="5" style="text-align:center; color: #4a6a8a; padding: 20px;">
+                                ⏳ Loading history...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <footer>
