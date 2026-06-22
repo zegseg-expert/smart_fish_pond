@@ -1,88 +1,299 @@
 /* ============================================================
+   FISH POND MONITOR - CLEAN DESIGN FOR APP & WEB
+   SMART FARM | 2021/1/81764CM
+   ============================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f4f8;
+    color: #1a2a3a;
+    min-height: 100vh;
+    padding: 15px;
+}
+
+.container {
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 20px 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+header {
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e8edf2;
+}
+
+header h1 {
+    font-size: 24px;
+    color: #0a7e8c;
+    font-weight: 700;
+}
+
+header h2 {
+    font-size: 14px;
+    color: #6a8a9a;
+    font-weight: 400;
+    margin-top: 2px;
+}
+
+header .matric {
+    font-size: 11px;
+    color: #9aacb8;
+    margin-top: 2px;
+}
+
+/* ============================================================
+   DASHBOARD CARDS
+   ============================================================ */
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 15px 0;
+}
+
+.card {
+    background: #f7f9fb;
+    border-radius: 14px;
+    padding: 15px 10px;
+    text-align: center;
+    border: 1px solid #e8edf2;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card .icon {
+    font-size: 26px;
+    margin-bottom: 4px;
+}
+
+.card .label {
+    font-size: 10px;
+    color: #8a9aa8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card .value {
+    font-size: 30px;
+    font-weight: 700;
+    margin: 3px 0;
+}
+
+.card .unit {
+    font-size: 12px;
+    color: #8a9aa8;
+}
+
+.card .status {
+    font-size: 10px;
+    margin-top: 4px;
+    padding: 2px 12px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+/* Card Colors */
+.temperature .value { color: #e67e22; }
+.ph .value { color: #2980b9; }
+.tds .value { color: #27ae60; }
+.signal .value { color: #f39c12; }
+
+/* Status Colors */
+.status.good { background: #d5f5e3; color: #1a7a3a; }
+.status.warning { background: #fdebd0; color: #a04000; }
+.status.danger { background: #fadbd8; color: #922b21; }
+.status.unknown { background: #ebedef; color: #6a7a8a; }
+
+/* ============================================================
+   INFO SECTION
+   ============================================================ */
+
+.info {
+    text-align: center;
+    padding: 12px;
+    background: #f7f9fb;
+    border-radius: 12px;
+    margin: 12px 0;
+    border: 1px solid #e8edf2;
+}
+
+.info p {
+    font-size: 12px;
+    color: #6a7a8a;
+    margin: 2px 0;
+}
+
+.info span {
+    color: #0a7e8c;
+    font-weight: 600;
+}
+
+/* ============================================================
    HISTORY SECTION
    ============================================================ */
 
 .history-section {
-    margin-top: 20px;
-    background: #12223a;
-    border-radius: 12px;
-    padding: 15px;
-    border: 1px solid #1a3a5c;
+    margin-top: 15px;
+    background: #f7f9fb;
+    border-radius: 14px;
+    padding: 14px;
+    border: 1px solid #e8edf2;
 }
 
 .history-section h3 {
     font-size: 14px;
-    color: #00d4ff;
+    color: #0a7e8c;
     margin-bottom: 10px;
     text-align: center;
+    font-weight: 600;
 }
 
 .history-section h3 span {
-    color: #4ade80;
+    color: #27ae60;
+    background: #d5f5e3;
+    padding: 1px 10px;
+    border-radius: 12px;
+    font-size: 12px;
 }
 
 .table-wrapper {
     overflow-x: auto;
-    max-height: 300px;
+    max-height: 280px;
     overflow-y: auto;
+    border-radius: 10px;
 }
 
 #historyTable {
     width: 100%;
     border-collapse: collapse;
     font-size: 12px;
+    background: #ffffff;
+    border-radius: 10px;
 }
 
 #historyTable thead {
     position: sticky;
     top: 0;
-    background: #0a1628;
     z-index: 2;
 }
 
 #historyTable th {
-    color: #7a9bb5;
+    background: #0a7e8c;
+    color: #ffffff;
     padding: 8px 6px;
     text-align: center;
-    border-bottom: 2px solid #1a3a5c;
     font-weight: 600;
-    text-transform: uppercase;
     font-size: 10px;
-    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+#historyTable th:first-child {
+    border-radius: 8px 0 0 0;
+}
+
+#historyTable th:last-child {
+    border-radius: 0 8px 0 0;
 }
 
 #historyTable td {
-    padding: 6px 4px;
+    padding: 7px 4px;
     text-align: center;
-    border-bottom: 1px solid #1a2a4a;
-    color: #c0d0e0;
+    border-bottom: 1px solid #e8edf2;
+    color: #2a3a4a;
+    font-size: 12px;
+}
+
+#historyTable tr:nth-child(even) td {
+    background: #fafcfd;
+}
+
+#historyTable tr:nth-child(odd) td {
+    background: #ffffff;
 }
 
 #historyTable tr:hover td {
-    background: #1a2a4a;
+    background: #e8f0fe;
 }
 
 #historyTable td:first-child {
-    color: #4a6a8a;
+    color: #8a9aa8;
     font-weight: 600;
 }
 
-/* Table scrollbar styling */
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
 .table-wrapper::-webkit-scrollbar {
     width: 4px;
     height: 4px;
 }
 
 .table-wrapper::-webkit-scrollbar-track {
-    background: #0a1628;
+    background: #e8edf2;
     border-radius: 4px;
 }
 
 .table-wrapper::-webkit-scrollbar-thumb {
-    background: #1a3a5c;
+    background: #b0c0cc;
     border-radius: 4px;
 }
 
 .table-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #2a5a7c;
+    background: #8a9aa8;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+
+footer {
+    text-align: center;
+    padding-top: 12px;
+    margin-top: 12px;
+    border-top: 1px solid #e8edf2;
+    font-size: 10px;
+    color: #9aacb8;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 400px) {
+    .dashboard {
+        gap: 8px;
+    }
+    .card {
+        padding: 12px 8px;
+    }
+    .card .value {
+        font-size: 24px;
+    }
+    header h1 {
+        font-size: 20px;
+    }
+    .container {
+        padding: 15px 10px;
+    }
 }
