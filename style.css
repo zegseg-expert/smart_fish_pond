@@ -1,5 +1,5 @@
 /* ============================================================
-   FISH POND MONITOR - PINK THEME
+   FISH POND MONITOR - PINK THEME (APP FIXED)
    SMART FARM | 2021/1/81764CM
    ============================================================ */
 
@@ -9,23 +9,50 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #fce4ec;
+    background: #fce4ec; /* Light pink */
     color: #4a1a2a;
     min-height: 100vh;
     padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
+
+/* ============================================================
+   MAIN CONTAINER - PINK BACKGROUND
+   ============================================================ */
 
 .container {
     max-width: 480px;
     width: 100%;
     margin: 0 auto;
-    background: #ffffff;
+    background: #fce4ec; /* Light pink background for app */
     border-radius: 20px;
     padding: 20px 15px;
     box-shadow: 0 4px 20px rgba(200, 50, 100, 0.15);
     border: 1px solid #f8bbd0;
+}
+
+/* Ensure cards stand out against pink background */
+.card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 15px 10px;
+    text-align: center;
+    border: 1px solid #f8bbd0;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
 }
 
 /* ============================================================
@@ -36,6 +63,7 @@ header {
     text-align: center;
     padding-bottom: 15px;
     border-bottom: 2px solid #f8bbd0;
+    background: #fce4ec;
 }
 
 header h1 {
@@ -66,19 +94,6 @@ header .matric {
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     margin: 15px 0;
-}
-
-.card {
-    background: #fce4ec;
-    border-radius: 14px;
-    padding: 15px 10px;
-    text-align: center;
-    border: 1px solid #f8bbd0;
-    transition: transform 0.2s;
-}
-
-.card:hover {
-    transform: translateY(-2px);
 }
 
 .card .icon {
@@ -132,7 +147,7 @@ header .matric {
 .info {
     text-align: center;
     padding: 12px;
-    background: #fce4ec;
+    background: #ffffff;
     border-radius: 12px;
     margin: 12px 0;
     border: 1px solid #f8bbd0;
@@ -155,7 +170,7 @@ header .matric {
 
 .history-section {
     margin-top: 15px;
-    background: #fce4ec;
+    background: #ffffff;
     border-radius: 14px;
     padding: 14px;
     border: 1px solid #f8bbd0;
@@ -276,6 +291,7 @@ footer {
     border-top: 1px solid #f8bbd0;
     font-size: 10px;
     color: #ad1457;
+    background: #fce4ec;
 }
 
 /* ============================================================
