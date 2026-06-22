@@ -3,7 +3,7 @@
 // SMART FARM | 2021/1/81764CM
 // ============================================================
 
-// Your Firebase config (from Firebase Console)
+// Your Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyCNYoTESy39Gwh4hM4CznmMEA-pJLV-zVQ",
     authDomain: "fishpondmonitor-46e83.firebaseapp.com",
@@ -71,8 +71,7 @@ latestRef.on('value', (snapshot) => {
         }
         
         if (data.timestamp !== undefined) {
-            const date = new Date(data.timestamp * 1000);
-            timestampEl.textContent = date.toLocaleString();
+            timestampEl.textContent = data.timestamp;
         }
         
         packetsEl.textContent = packetCount;
@@ -90,6 +89,8 @@ const historyRef = database.ref('/history');
 historyRef.on('value', (snapshot) => {
     const data = snapshot.val();
     
+    console.log('History data received:', data);  // Debug log
+    
     if (data) {
         // Convert object to array of entries
         const entries = Object.keys(data).map(key => {
@@ -99,17 +100,39 @@ historyRef.on('value', (snapshot) => {
             };
         });
         
+        console.log('Entries:', entries);  // Debug log
+        
         // Sort by timestamp (newest first)
-        entries.sort((a, b) => b.timestamp - a.timestamp);
+        entries.sort((a, b) => {
+            // If timestamp exists, use it
+            if (a.timestamp && b.timestamp) {
+                return b.timestamp.localeCompare(a.timestamp);
+            }
+            // Fallback to key sort
+            return b.key.localeCompare(a.key);
+        });
         
         // Get last 10 entries
         const last10 = entries.slice(0, 10);
+        
+        console.log('Last 10:', last10);  // Debug log
         
         // Update history count
         historyCount.textContent = last10.length;
         
         // Clear table
         historyBody.innerHTML = '';
+        
+        if (last10.length === 0) {
+            historyBody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align:center; color: #8a9aa8; padding: 20px;">
+                        📭 No history data yet. Waiting for first reading...
+                    </td>
+                </tr>
+            `;
+            return;
+        }
         
         // Add each entry to table
         last10.forEach((entry, index) => {
@@ -122,24 +145,36 @@ historyRef.on('value', (snapshot) => {
             
             // Temperature
             const tempCell = document.createElement('td');
-            tempCell.textContent = entry.temperature ? entry.temperature.toFixed(1) + '°C' : '--';
+            tempCell.textContent = entry.temperature !== undefined ? entry.temperature.toFixed(1) + '°C' : '--';
             row.appendChild(tempCell);
             
             // pH
             const phCell = document.createElement('td');
-            phCell.textContent = entry.ph ? entry.ph.toFixed(2) : '--';
+            phCell.textContent = entry.ph !== undefined ? entry.ph.toFixed(2) : '--';
             row.appendChild(phCell);
             
             // TDS
             const tdsCell = document.createElement('td');
-            tdsCell.textContent = entry.tds ? entry.tds.toFixed(0) + ' ppm' : '--';
+            tdsCell.textContent = entry.tds !== undefined ? entry.tds.toFixed(0) + ' ppm' : '--';
             row.appendChild(tdsCell);
             
             // Time
             const timeCell = document.createElement('td');
             if (entry.timestamp) {
-                const date = new Date(entry.timestamp * 1000);
-                timeCell.textContent = date.toLocaleTimeString();
+                // Show only time part if date is today, otherwise show full
+                const fullTime = entry.timestamp;
+                // Check if it contains a date
+                if (fullTime.includes(' ')) {
+                    const parts = fullTime.split(' ');
+                    if (parts.length >= 2) {
+                        // Show only time (HH:MM:SS)
+                        timeCell.textContent = parts[1];
+                    } else {
+                        timeCell.textContent = fullTime;
+                    }
+                } else {
+                    timeCell.textContent = fullTime;
+                }
             } else {
                 timeCell.textContent = '--';
             }
@@ -147,9 +182,25 @@ historyRef.on('value', (snapshot) => {
             
             historyBody.appendChild(row);
         });
+    } else {
+        historyBody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align:center; color: #8a9aa8; padding: 20px;">
+                    📭 No history data yet. Waiting for first reading...
+                </td>
+            </tr>
+        `;
+        historyCount.textContent = '0';
     }
 }, (error) => {
     console.error('History read error:', error);
+    historyBody.innerHTML = `
+        <tr>
+            <td colspan="5" style="text-align:center; color: #ff6b35; padding: 20px;">
+                ❌ Error loading history. Check Firebase.
+            </td>
+        </tr>
+    `;
 });
 
 // ============================================================
